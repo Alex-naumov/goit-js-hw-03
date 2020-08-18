@@ -1,5 +1,5 @@
 "use strict";
-
+let id = 0;
 /*
  * Типов транзацкий всего два.
  * Можно положить либо снять деньги со счета.
@@ -25,7 +25,9 @@ const account = {
    * Принимает сумму и тип транзакции.
    */
   createTransaction(amount, type) {
-    this.transaction.push({ amount: amount, type: type });
+    const transaction = { amount: amount, type: type, id: id };
+    id = id + 1;
+    return transaction;
   },
 
   /*
@@ -35,7 +37,7 @@ const account = {
    * после чего добавляет его в историю транзакций
    */
   deposit(amount) {
-    createTransaction(amount, Transaction.DEPOSIT);
+    this.transaction.push(createTransaction(amount, Transaction.DEPOSIT));
     this.balance = this.balance + amount;
   },
 
@@ -52,7 +54,7 @@ const account = {
     if (amount > this.balance) {
       console.log("снятие такой суммы не возможно, недостаточно средств.");
     } else {
-      createTransaction(amount, Transaction.WITHDRAW);
+      this.transaction.push(createTransaction(amount, Transaction.WITHDRAW));
       this.balance = this.balance - amount;
     }
   },
@@ -69,7 +71,7 @@ const account = {
    */
   getTransactionDetails(id) {
     for (let i = 0; i < this.transactions.length; i++) {
-      if ((id = i)) {
+      if (id === i) {
         return this.transactions[i];
       }
     }
@@ -80,10 +82,12 @@ const account = {
    * определенного типа транзакции из всей истории транзакций
    */
   getTransactionTotal(type) {
+    let sum = 0;
     for (let i = 0; i < this.transactions.length; i++) {
-      if ((this.transactions[i].type = type)) {
-        return this.transactions[i].amount;
+      if (this.transactions[i].type === type) {
+        sum = sum + this.transactions[i].amount;
       }
     }
+    return sum;
   },
 };
